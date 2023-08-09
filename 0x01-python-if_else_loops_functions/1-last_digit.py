@@ -10,4 +10,4 @@ if number < 0:
     elif digit == 0:
         print("0")
     else:
-        printf("less than 6 and not )")
+        printf("less than 6 and not 0")
