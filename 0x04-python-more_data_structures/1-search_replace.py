@@ -9,4 +9,4 @@ def search_replace(my_list, search, replace):
         else:
             result_list.append(item)
 
-            return result_list
+    return result_list
