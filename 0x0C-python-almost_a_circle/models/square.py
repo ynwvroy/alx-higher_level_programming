@@ -1,67 +1,62 @@
 #!/usr/bin/python3
-"""Class Square that inherits from class Rectangle"""
+"""Square module"""
 from models.rectangle import Rectangle
 
 
 class Square(Rectangle):
-    """Class that defines a square"""
+    """Square class inherits from Rectangle."""
 
     def __init__(self, size, x=0, y=0, id=None):
-        """Initializes class Square"""
+        """
+        Initializes a Square instance.
 
+        Args:
+            size (int): The size of the square (both width and height).
+            x (int, optional): The x-coordinate of the square's position.
+            y (int, optional): The y-coordinate of the square's position.
+            id (int, optional): The ID of the square.
+
+        Attributes:
+            size (int): The size of the square (both width and height).
+            x (int): The x-coordinate of the square's position.
+            y (int): The y-coordinate of the square's position.
+            id (int): The ID of the square.
+        """
         super().__init__(size, size, x, y, id)
 
-    def to_dictionary(self):
-        """Returns a dictionary representation of Square"""
-
-        d = {"id": self.id, "size": self.width,
-             "x": self.x, "y": self.y}
-
-        return d
-
-    def update(self, *args, **kwargs):
-        """Updates multiples attributes as either args or dicts
-        Args:
-            *args: multiple arguments
-            **kwargs: dictionary arguments
-        """
-
-        attrs = ["id", "size", "x", "y"]
-        for elem in range(len(args)):
-            for attr in range(len(attrs)):
-                if attr == elem:
-                    setattr(self, attrs[attr], args[elem])
-                    break
-
-        if not args or len(args) == 0:
-            for key, val in kwargs.items():
-                for attr in range(len(attrs)):
-                    if key == attrs[attr]:
-                        setattr(self, attrs[attr], val)
-                        break
+    def __str__(self):
+        """Return a string representation of the Square."""
+        return "[Square] ({}) {}/{} - {}".format(
+            self.id, self.x, self.y, self.width)
 
     @property
     def size(self):
-        """Returns size as a private attribute"""
-
+        """Getter for size attribute."""
         return self.width
 
     @size.setter
     def size(self, value):
-        """Defines width and height of square
-        Args:
-            value: integer that represents width and height
-        """
-
-        if type(value) is not int:
-            raise TypeError("width must be an integer")
-        if value <= 0:
-            raise ValueError("width must be > 0")
+        """Setter for size attribute."""
         self.width = value
         self.height = value
 
-    def __str__(self):
-        """Overwrites the __str__ magic method"""
+    def update(self, *args, **kwargs):
+        """Update attribute of the square"""
+        if args:
+            attrs = ["id", "size", "x", "y"]
+            for i, arg in enumerate(args):
+                setattr(self, attrs[i], arg)
+        else:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
 
-        return ("[Square] ({}) {}/{} - {}".format(self.id, self.x,
-                                                  self.y, self.width))
+    def to_dictionary(self):
+        """Return the dictionary rep of a Square"""
+        square_dict = {
+            "id": self.id,
+            "size": self.width,
+            "x": self.x,
+            "y": self.y
+        }
+
+        return square_dict

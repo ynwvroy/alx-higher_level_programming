@@ -1,97 +1,142 @@
-"""Module holds class Base"""
+#!/usr/bin/python3
+import unittest
+from models.base import Base
+from models.square import Square
 import json
+import inspect
 
+'''
+    Creating test cases for the base and square modules
+'''
 
-class Base:
-    """Base class"""
+class TestBase(unittest.TestCase):
+    '''
+        Testing the Base class
+    '''
 
-    __nb_objects = 0
+    def test_id_none(self):
+        '''
+            Testing Base class with no ID
+        '''
+        b = Base()
+        self.assertEqual(1, b.id)
 
-    def __init__(self, id=None):
-        """Initializes attributes for class Base
-        Args:
-            id: public instance attribute
-        """
+    def test_id(self):
+        '''
+            Testing Base class with a valid ID
+        '''
+        b = Base(50)
+        self.assertEqual(50, b.id)
 
-        if id is None:
-            Base.__nb_objects += 1
-            self.id = Base.__nb_objects
-        else:
-            self.id = id
+    def test_id_zero(self):
+        '''
+            Testing Base class with an ID of 0
+        '''
+        b = Base(0)
+        self.assertEqual(0, b.id)
 
-    @staticmethod
-    def to_json_string(list_dictionaries):
-        """Returns JSON string representation of list_dictionaries
-        Args:
-            list_dictionaries: a list of dictionaries
-        """
+    def test_id_negative(self):
+        '''
+            Testing Base class with a negative ID
+        '''
+        b = Base(-20)
+        self.assertEqual(-20, b.id)
 
-        if list_dictionaries is None or len(list_dictionaries) == 0:
-            return "[]"
+    def test_id_string(self):
+        '''
+            Testing Base class with an ID that is a string
+        '''
+        b = Base("Betty")
+        self.assertEqual("Betty", b.id)
 
-        return (json.dumps(list_dictionaries))
+    def test_id_list(self):
+        '''
+            Testing Base class with an ID that is a list
+        '''
+        b = Base([1, 2, 3])
+        self.assertEqual([1, 2, 3], b.id)
 
-    @staticmethod
-    def from_json_string(json_string):
-        """Returns the list of the JSON string representation 'json_string'
-        Args:
-            json_string: string representation of a list of dictionaries
-        """
+    def test_id_dict(self):
+        '''
+            Testing Base class with an ID that is a dictionary
+        '''
+        b = Base({"id": 109})
+        self.assertEqual({"id": 109}, b.id)
 
-        if json_string is None or len(json_string) == 0:
-            return []
+    def test_id_tuple(self):
+        '''
+            Testing Base class with an ID that is a tuple
+        '''
+        b = Base((8,))
+        self.assertEqual((8,), b.id)
 
-        return json.loads(json_string)
+    def test_to_json_type(self):
+        '''
+            Testing to_json_string method with a Square object
+        '''
+        sq = Square(1)
+        json_dict = sq.to_dictionary()
+        json_string = Base.to_json_string([json_dict])
+        self.assertEqual(type(json_string), str)
+
+    def test_to_json_value(self):
+        '''
+            Testing to_json_string method with a Square object and checking its value
+        '''
+        sq = Square(1, 0, 0, 609)
+        json_dict = sq.to_dictionary()
+        json_string = Base.to_json_string([json_dict])
+        self.assertEqual(json.loads(json_string),
+                         [{"id": 609, "y": 0, "size": 1, "x": 0}])
+
+    def test_to_json_None(self):
+        '''
+            Testing to_json_string method with None input
+        '''
+        sq = Square(1, 0, 0, 609)
+        json_dict = sq.to_dictionary()
+        json_string = Base.to_json_string(None)
+        self.assertEqual(json_string, "[]")
+
+    def test_to_json_Empty(self):
+        '''
+            Testing to_json_string method with an empty list input
+        '''
+        sq = Square(1, 0, 0, 609)
+        json_dict = sq.to_dictionary()
+        json_string = Base.to_json_string([])
+        self.assertEqual(json_string, "[]")
+
+class TestSquare(unittest.TestCase):
+    """
+    Class for testing Square class and its methods
+    """
 
     @classmethod
-    def save_to_file(cls, list_objs):
-        """Writes JSON string representation of list_objs to a file
-        Args:
-            list_objs: a list of instances who inherit Base
+    def setUpClass(cls):
         """
-
-        fn = cls.__name__
-        filename = fn + ".json"
-        new_list = []
-        with open(filename, mode='w', encoding='utf-8') as f:
-            if list_objs is None:
-                f.write(cls.to_json_string([]))
-            else:
-                for obj in list_objs:
-                    new_list.append(obj.to_dictionary())
-                f.write(cls.to_json_string(new_list))
-
-    @classmethod
-    def create(cls, **dictionary):
-        """Returns an instance with all attributes already set
-        Args:
-            **dictionary: can be thought of as a double pointer to a
-                          dictionary
+        Set up class method for doc tests
         """
+        cls.setup = inspect.getmembers(Base, inspect.isfunction)
 
-        if cls.__name__ == "Rectangle":
-            dummy = cls(1, 1)
-        elif cls.__name__ == "Square":
-            dummy = cls(1)
-        dummy.update(**dictionary)
-        return dummy
+    def test_module_docstring(self):
+        """
+        Tests if module docstring documentation exists
+        """
+        self.assertTrue(len(Base.__doc__) >= 1)
 
-    @classmethod
-    def load_from_file(cls):
-        """Returns a list of instances"""
-        import os
+    def test_class_docstring(self):
+        """
+        Tests if class docstring documentation exists
+        """
+        self.assertTrue(len(Base.__doc__) >= 1)
 
-        inst_list = []
-        fn = cls.__name__
-        filename = fn + ".json"
-        exists = os.path.isfile(filename)
+    def test_func_docstrings(self):
+        """
+        Tests if methods docstring documentation exists
+        """
+        for func in self.setup:
+            self.assertTrue(len(func[1].__doc__) >= 1)
 
-        if not exists:
-            return inst_list
-
-        with open(filename, mode='r', encoding='utf-8') as f:
-            for line in f:
-                obj = cls.from_json_string(line)
-                for i in obj:
-                    inst_list.append(cls.create(**i))
-        return inst_list
+if __name__ == '__main__':
+    unittest.main()

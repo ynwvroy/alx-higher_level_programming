@@ -2,6 +2,8 @@
 """Unit tests for Rectangle class"""
 
 import unittest
+import unittest.mock
+import io
 from models.rectangle import Rectangle
 
 
