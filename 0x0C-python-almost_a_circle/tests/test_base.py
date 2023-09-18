@@ -23,7 +23,8 @@ class TestBase(unittest.TestCase):
         r1 = Rectangle(10, 7, 2, 8)
         dictionary = r1.to_dictionary()
         json_string = Base.to_json_string([dictionary])
-        self.assertEqual(json_string, '[{"x": 2, "y": 8, "id": 1, "height": 7, "width": 10}]')
+        expected_json = '[{"x": 2, "y": 8, "id": 1, "height": 7, "width": 10}]'
+        self.assertEqual(json_string, expected_json)
 
     def test_from_json_string(self):
         """Test the from_json_string method"""
@@ -40,7 +41,9 @@ class TestBase(unittest.TestCase):
         Rectangle.save_to_file([r1, r2])
         with open("Rectangle.json", "r") as file:
             json_string = file.read()
-            self.assertEqual(json_string, '[{"x": 2, "y": 8, "id": 1, "height": 7, "width": 10}, {"x": 0, "y": 0, "id": 2, "height": 4, "width": 2}]')
+            expected_json = '[{"x": 2, "y": 8, "id": 1, "height": 7, "width": 10}, {"x": 0, "y": 0, "id": 2, "height": 4, "width": 2}]'
+            self.assertEqual(json_string, expected_json)
+       
 
     def test_load_from_file(self):
         """Test the load_from_file method"""
