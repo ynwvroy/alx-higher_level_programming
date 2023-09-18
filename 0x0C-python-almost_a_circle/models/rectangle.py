@@ -1,121 +1,97 @@
-#!/usr/bin/python3
-"""Rectangle module"""
-from models.base import Base
+"""Module holds class Base"""
+import json
 
-class Rectangle(Base):
-    """Rectangle class inherits from Base."""
 
-    def __init__(self, width, height, x=0, y=0, id=None):
-        """
-        Initializes a Rectangle instance.
+class Base:
+    """Base class"""
 
+    __nb_objects = 0
+
+    def __init__(self, id=None):
+        """Initializes attributes for class Base
         Args:
-            width (int): The width of the rectangle.
-            height (int): The height of the rectangle.
-            x (int, optional): The x-coordinate of the rectangle's position.
-            y (int, optional): The y-coordinate of the rectangle's position.
-            id (int, optional): The ID of the rectangle.
-
-        Attributes:
-            width (int): The width of the rectangle.
-            height (int): The height of the rectangle.
-            x (int): The x-coordinate of the rectangle's position.
-            y (int): The y-coordinate of the rectangle's position.
-            id (int): The ID of the rectangle.
+            id: public instance attribute
         """
-        super()>__init__(id) #Call the base class constructor with id
-        self.width = width
-        self.height = height
-        self.x = x
-        self.y = y
 
-    @property
-    def width(self):
-        """Getter for width attribute."""
-        return self.__width
-
-    @width.setter
-    def width(self, value):
-        """Setter for width attribute."""
-        if type(value) is not int:
-            raise TypeError("width must be an integer")
-        if value <= 0:
-            raise ValueError("wudth must be > 0")
-        self.__width = value
-
-    @property
-    def height(self):
-        """Getter for height attribute."""
-        return self.__height
-
-    @height.setter
-    def height(self, value):
-        """Setter for height attribute."""
-        if type(value) is not int:
-            raise TypeError("height must be an integer")
-        if value <= 0:
-            raise ValueError("height must be > 0")
-        self.__height = value
-
-    @property
-    def x(self):
-        """Getter for x attribute."""
-        return self.__x
-
-    @x.setter
-    def x(self, value):
-        """Setter for x attribute."""
-        if type(value) is not int:
-            raise TypeError("x must be an integer")
-        if value < 0:
-            raise ValueError("x must be >= 0")
-        self.__x = value
-
-    @property
-    def y(self):
-        """Getter for y attribute."""
-        return self.__y
-
-    @y.setter
-    def y(self, value):
-        """Setter for y attribute."""
-        if type(value) is not int:
-            raise TypeError("y must be an integer")
-        if value < 0:
-            raise ValueError("y must be >= 0")
-        self.__y = value
-
-    def area(self):
-        """Calculate and return the area of the rectangle"""
-        return self.__width * self.__height
-
-    def display(self):
-        """Print the rectangle instance with '#' characters"""
-        for _ in range(self.__y):
-            print()
-        for _ in range(self.__height):
-            print(" " * self.__x + "#" * self.__width)
-
-    def __str__(self):
-        """Return a string rep of a rectangle"""
-        return "[Rectangle] ({}) {}/{} - {}/{}".format(self.id, self.__x, self.__y, self.__width, self.__height)
-
-    def update(self, *args, **kwargs):
-        """Assign arguments or keyword arguments to attribute."""
-        attr_names = ['id', 'width', 'height', 'x', 'y']
-        if args:
-            for i, arg in enumerate(args):
-                setattr(self, attr_names[i], arg)
+        if id is None:
+            Base.__nb_objects += 1
+            self.id = Base.__nb_objects
         else:
-            for key, value in kwargs.items():
-                setattr(self, key, value)
+            self.id = id
 
-    def to_dictionary(self):
-        """Return a dic rep of the rectangle"""
-        return {
-            'id': self.id,
-            'width': self.__width,
-            'height': self.__height,
-            'x': self.__x,
-            'y': self.__y
-        }
+    @staticmethod
+    def to_json_string(list_dictionaries):
+        """Returns JSON string representation of list_dictionaries
+        Args:
+            list_dictionaries: a list of dictionaries
+        """
+
+        if list_dictionaries is None or len(list_dictionaries) == 0:
+            return "[]"
+
+        return (json.dumps(list_dictionaries))
+
+    @staticmethod
+    def from_json_string(json_string):
+        """Returns the list of the JSON string representation 'json_string'
+        Args:
+            json_string: string representation of a list of dictionaries
+        """
+
+        if json_string is None or len(json_string) == 0:
+            return []
+
+        return json.loads(json_string)
+
+    @classmethod
+    def save_to_file(cls, list_objs):
+        """Writes JSON string representation of list_objs to a file
+        Args:
+            list_objs: a list of instances who inherit Base
+        """
+
+        fn = cls.__name__
+        filename = fn + ".json"
+        new_list = []
+        with open(filename, mode='w', encoding='utf-8') as f:
+            if list_objs is None:
+                f.write(cls.to_json_string([]))
+            else:
+                for obj in list_objs:
+                    new_list.append(obj.to_dictionary())
+                f.write(cls.to_json_string(new_list))
+
+    @classmethod
+    def create(cls, **dictionary):
+        """Returns an instance with all attributes already set
+        Args:
+            **dictionary: can be thought of as a double pointer to a
+                          dictionary
+        """
+
+        if cls.__name__ == "Rectangle":
+            dummy = cls(1, 1)
+        elif cls.__name__ == "Square":
+            dummy = cls(1)
+        dummy.update(**dictionary)
+        return dummy
+
+    @classmethod
+    def load_from_file(cls):
+        """Returns a list of instances"""
+        import os
+
+        inst_list = []
+        fn = cls.__name__
+        filename = fn + ".json"
+        exists = os.path.isfile(filename)
+
+        if not exists:
+            return inst_list
+
+        with open(filename, mode='r', encoding='utf-8') as f:
+            for line in f:
+                obj = cls.from_json_string(line)
+                for i in obj:
+                    inst_list.append(cls.create(**i))
+        return inst_list
