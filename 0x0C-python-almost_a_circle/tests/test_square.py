@@ -1,58 +1,44 @@
 import unittest
-import json
-import inspect
-
 from models.square import Square
-from unittest.mock import Mock
-
 
 class TestSquare(unittest.TestCase):
+    """A unittest class for testing the Square class."""
 
-    def test_square_init(self):
-        # Test square initialization with valid arguments
-        sq = Square(5, 1, 2, 10)
-        self.assertEqual(sq.id, 10)
-        self.assertEqual(sq.size, 5)
-        self.assertEqual(sq.x, 1)
-        self.assertEqual(sq.y, 2)
+    def setUp(self):
+        """Set up a Square instance for testing."""
+        self.square = Square(3)
 
-        # Test square initialization with default values
-        sq = Square(5)
-        self.assertEqual(sq.id, 1)
-        self.assertEqual(sq.size, 5)
-        self.assertEqual(sq.x, 0)
-        self.assertEqual(sq.y, 0)
+    def test_attributes(self):
+        """Test if the attributes of the Square instance are set correctly."""
+        self.assertEqual(self.square.size, 5)
+        self.assertEqual(self.square.width, 5)
+        self.assertEqual(self.square.height, 5)
+        self.assertEqual(self.square.x, 2)
+        self.assertEqual(self.square.y, 3)
+        self.assertEqual(self.square.id, 1)
 
-    def test_str_representation(self):
-        sq = Square(5, 1, 2, 10)
-        expected_str = "[Square] (10) 1/2 - 5"
-        self.assertEqual(str(sq), expected_str)
+    def test_str(self):
+        """Test the string representation of the Square."""
+        expected_str = "[Square] (1) 2/3 - 5"
+        self.assertEqual(str(self.square), expected_str)
 
-    def test_size_property(self):
-        sq = Square(5)
-        sq.size = 10
-        self.assertEqual(sq.size, 10)
-        self.assertEqual(sq.width, 10)
-        self.assertEqual(sq.height, 10)
+    def test_update(self):
+        """Test the update method of the Square."""
+        self.square.update(2, 4, 6, 8, id=3)
+        self.assertEqual(self.square.id, 2)
+        self.assertEqual(self.square.size, 4)
+        self.assertEqual(self.square.x, 6)
+        self.assertEqual(self.square.y, 8)
 
-    def test_update_method(self):
-        sq = Square(5, 1, 2, 10)
-        sq.update(20, 7, 8, 15)
-        self.assertEqual(sq.id, 20)
-        self.assertEqual(sq.size, 7)
-        self.assertEqual(sq.x, 8)
-        self.assertEqual(sq.y, 15)
-
-        sq.update(x=3, y=4)
-        self.assertEqual(sq.x, 3)
-        self.assertEqual(sq.y, 4)
-
-    def test_to_dictionary_method(self):
-        sq = Square(5, 1, 2, 10)
-        sq_dict = sq.to_dictionary()
-        expected_dict = {'id': 10, 'size': 5, 'x': 1, 'y': 2}
-        self.assertEqual(sq_dict, expected_dict)
-
+    def test_to_dictionary(self):
+        """Test the to_dictionary method of the Square."""
+        expected_dict = {
+            'id': 1,
+            'size': 5,
+            'x': 2,
+            'y': 3
+        }
+        self.assertEqual(self.square.to_dictionary(), expected_dict)
 
 if __name__ == '__main__':
     unittest.main()

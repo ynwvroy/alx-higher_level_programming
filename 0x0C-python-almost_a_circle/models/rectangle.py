@@ -1,142 +1,123 @@
 #!/usr/bin/python3
-import unittest
+"""Rectangle module"""
 from models.base import Base
-from models.square import Square
-import json
-import inspect
 
-'''
-    Creating test cases for the base and square modules
-'''
 
-class TestBase(unittest.TestCase):
-    '''
-        Testing the Base class
-    '''
+class Rectangle(Base):
+    """Rectangle class inherits from Base."""
 
-    def test_id_none(self):
-        '''
-            Testing Base class with no ID
-        '''
-        b = Base()
-        self.assertEqual(1, b.id)
-
-    def test_id(self):
-        '''
-            Testing Base class with a valid ID
-        '''
-        b = Base(50)
-        self.assertEqual(50, b.id)
-
-    def test_id_zero(self):
-        '''
-            Testing Base class with an ID of 0
-        '''
-        b = Base(0)
-        self.assertEqual(0, b.id)
-
-    def test_id_negative(self):
-        '''
-            Testing Base class with a negative ID
-        '''
-        b = Base(-20)
-        self.assertEqual(-20, b.id)
-
-    def test_id_string(self):
-        '''
-            Testing Base class with an ID that is a string
-        '''
-        b = Base("Betty")
-        self.assertEqual("Betty", b.id)
-
-    def test_id_list(self):
-        '''
-            Testing Base class with an ID that is a list
-        '''
-        b = Base([1, 2, 3])
-        self.assertEqual([1, 2, 3], b.id)
-
-    def test_id_dict(self):
-        '''
-            Testing Base class with an ID that is a dictionary
-        '''
-        b = Base({"id": 109})
-        self.assertEqual({"id": 109}, b.id)
-
-    def test_id_tuple(self):
-        '''
-            Testing Base class with an ID that is a tuple
-        '''
-        b = Base((8,))
-        self.assertEqual((8,), b.id)
-
-    def test_to_json_type(self):
-        '''
-            Testing to_json_string method with a Square object
-        '''
-        sq = Square(1)
-        json_dict = sq.to_dictionary()
-        json_string = Base.to_json_string([json_dict])
-        self.assertEqual(type(json_string), str)
-
-    def test_to_json_value(self):
-        '''
-            Testing to_json_string method with a Square object and checking its value
-        '''
-        sq = Square(1, 0, 0, 609)
-        json_dict = sq.to_dictionary()
-        json_string = Base.to_json_string([json_dict])
-        self.assertEqual(json.loads(json_string),
-                         [{"id": 609, "y": 0, "size": 1, "x": 0}])
-
-    def test_to_json_None(self):
-        '''
-            Testing to_json_string method with None input
-        '''
-        sq = Square(1, 0, 0, 609)
-        json_dict = sq.to_dictionary()
-        json_string = Base.to_json_string(None)
-        self.assertEqual(json_string, "[]")
-
-    def test_to_json_Empty(self):
-        '''
-            Testing to_json_string method with an empty list input
-        '''
-        sq = Square(1, 0, 0, 609)
-        json_dict = sq.to_dictionary()
-        json_string = Base.to_json_string([])
-        self.assertEqual(json_string, "[]")
-
-class TestSquare(unittest.TestCase):
-    """
-    Class for testing Square class and its methods
-    """
-
-    @classmethod
-    def setUpClass(cls):
+    def __init__(self, width, height, x=0, y=0, id=None):
         """
-        Set up class method for doc tests
-        """
-        cls.setup = inspect.getmembers(Base, inspect.isfunction)
+        Initializes a Rectangle instance.
 
-    def test_module_docstring(self):
-        """
-        Tests if module docstring documentation exists
-        """
-        self.assertTrue(len(Base.__doc__) >= 1)
+        Args:
+            width (int): The width of the rectangle.
+            height (int): The height of the rectangle.
+            x (int, optional): The x-coordinate of the rectangle's position.
+            y (int, optional): The y-coordinate of the rectangle's position.
+            id (int, optional): The ID of the rectangle.
 
-    def test_class_docstring(self):
+        Attributes:
+            width (int): The width of the rectangle.
+            height (int): The height of the rectangle.
+            x (int): The x-coordinate of the rectangle's position.
+            y (int): The y-coordinate of the rectangle's position.
+            id (int): The ID of the rectangle.
         """
-        Tests if class docstring documentation exists
-        """
-        self.assertTrue(len(Base.__doc__) >= 1)
+        super().__init__(id)  # Call the base class constructor with id
+        self.width = width
+        self.height = height
+        self.x = x
+        self.y = y
 
-    def test_func_docstrings(self):
-        """
-        Tests if methods docstring documentation exists
-        """
-        for func in self.setup:
-            self.assertTrue(len(func[1].__doc__) >= 1)
+    @property
+    def width(self):
+        """Getter for width attribute."""
+        return self.__width
 
-if __name__ == '__main__':
-    unittest.main()
+    @width.setter
+    def width(self, value):
+        """Setter for width attribute."""
+        if type(value) is not int:
+            raise TypeError("width must be an integer")
+        if value <= 0:
+            raise ValueError("width must be > 0")
+        self.__width = value
+
+    @property
+    def height(self):
+        """Getter for height attribute."""
+        return self.__height
+
+    @height.setter
+    def height(self, value):
+        """Setter for height attribute."""
+        if type(value) is not int:
+            raise TypeError("height must be an integer")
+        if value <= 0:
+            raise ValueError("height must be > 0")
+        self.__height = value
+
+    @property
+    def x(self):
+        """Getter for x attribute."""
+        return self.__x
+
+    @x.setter
+    def x(self, value):
+        """Setter for x attribute."""
+        if type(value) is not int:
+            raise TypeError("x must be an integer")
+        if value < 0:
+            raise ValueError("x must be >= 0")
+        self.__x = value
+
+    @property
+    def y(self):
+        """Getter for y attribute."""
+        return self.__y
+
+    @y.setter
+    def y(self, value):
+        """Setter for y attribute."""
+        if type(value) is not int:
+            raise TypeError("y must be an integer")
+        if value < 0:
+            raise ValueError("y must be >= 0")
+        self.__y = value
+
+    def area(self):
+        """Calculate and return the area of the rectangle"""
+        return self.__width * self.__height
+
+    def display(self):
+        """Return a string rep of a rectangl with '#' """
+        return "\n".join(["#" * self.__width] * self.__height)
+
+    def __str__(self):
+        """Return a string rep of a rectangle"""
+        return (
+            f"[Rectangle] ({self.id}) "
+            f"{self.__x}/{self.__y} - "
+            f"{self.__width}/{self.__height}"
+        )
+
+    def update(self, *args, **kwargs):
+        """Assign arguments or keyword arguments to attributes."""
+        attr_names = ['id', 'width', 'height', 'x', 'y']
+        if args:
+            for i, arg in enumerate(args):
+                setattr(self, attr_names[i], arg)
+        else:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
+
+    def to_dictionary(self):
+        """Return the dictionary representation of the rectangle."""
+        return {
+            'id': self.id,
+            'width': self.__width,
+            'height': self.__height,
+            'x': self.__x,
+            'y': self.__y
+        }

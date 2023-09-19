@@ -1,68 +1,80 @@
 #!/usr/bin/python3
-"""
-Unit tests for the Base class.
-
-Unittest classes:
-    TestBaseInstantiation - line 21
-    TestBaseToJsonString - line 108
-    TestBaseSaveToFile - line 154
-    TestBaseFromJsonString - line 232
-    TestBaseCreate - line 286
-    TestBaseLoadFromFile - line 338
-    TestBaseSaveToFileCSV - line 404
-    TestBaseLoadFromFileCSV - line 482
-"""
-
-import os
 import unittest
+import json
 from models.base import Base
-from models.rectangle import Rectangle
-from models.square import Square
 
-class TestBaseInstantiation(unittest.TestCase):
-    """Unit tests for testing instantiation of the Base class."""
+class TestBase(unittest.TestCase):
+    """
+    A unittest class for testing the Base class and its methods.
+    """
 
-    def test_no_arg(self):
-        base1 = Base()
-        base2 = Base()
-        self.assertEqual(base1.id, base2.id - 1)
+    def setUp(self):
+        """
+        Set up a Base instance for testing.
+        """
+        self.instances = Base()
 
-    # Add more test cases for Base instantiation here
+    def tearDown(self):
+        """
+        Clean up after each test.
+        """
+        Base._Base__nb_objects = 0  # Reset the __nb_objects counter to 0
 
-class TestBaseToJsonString(unittest.TestCase):
-    """Unit tests for testing to_json_string method of Base class."""
+    def test_init(self):
+        """
+        Test the constructor (__init__) of the Base class.
+        """
+        self.assertEqual(self.base_instance.id, 1)
+        new_base_instance = Base(100)
+        self.assertEqual(new_base_instance.id, 100)
 
-    # Add test cases for to_json_string method here
+    def test_to_json_string(self):
+        """
+        Test the to_json_string method of the Base class.
+        """
+        dict_list = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]
+        json_string = Base.to_json_string(dict_list)
+        self.assertEqual(json_string, json.dumps(dict_list))
 
-class TestBaseSaveToFile(unittest.TestCase):
-    """Unit tests for testing save_to_file method of Base class."""
+    def test_save_to_file(self):
+        """
+        Test the save_to_file method of the Base class.
+        """
+        dict_list = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]
+        isinstances = [Base.create(**d) for d in dict_list]
+        Base.save_to_file([self.base_instance])
+        with open("Base.json", mode="r", encoding="utf-8") as file:
+            saved_json_string = file.read()
+        self.assertEqual(saved_json_string, Base.to_json_string([obj.to_dictionary() for obj in instances]))
 
-    # Add test cases for save_to_file method here
+    def test_from_json_string(self):
+        """
+        Test the from_json_string method of the Base class.
+        """
+        json_string = '[{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]'
+        dict_list = Base.from_json_string(json_string)
+        self.assertEqual(dict_list, json.loads(json_string))
 
-class TestBaseFromJsonString(unittest.TestCase):
-    """Unit tests for testing from_json_string method of Base class."""
+    def test_create(self):
+        """
+        Test the create method of the Base class.
+        """
+        dictionary = {'id': 3, 'name': 'Charlie'}
+        instance = Base.create(**dictionary)
+        self.assertEqual(instance.id, 3)
+        self.assertEqual(instance.__class__.__name__, "Base")
 
-    # Add test cases for from_json_string method here
+    def test_load_from_file(self):
+        """
+        Test the load_from_file method of the Base class.
+        """
+        dict_list = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]
+        isinstances = [Base.create(**d) for d in dict_list]
+        Base.save_to_file(instances)
+        loaded_instances = Base.load_from_file()
+        self.assertEqual(len(loaded_instances), 2)
+        self.assertEqual(loaded_instances[0].id, 1)
+        self.assertEqual(loaded_instances[1].id, 2)
 
-class TestBaseCreate(unittest.TestCase):
-    """Unit tests for testing create method of Base class."""
-
-    # Add test cases for create method here
-
-class TestBaseLoadFromFile(unittest.TestCase):
-    """Unit tests for testing load_from_file method of Base class."""
-
-    # Add test cases for load_from_file method here
-
-class TestBaseSaveToFileCSV(unittest.TestCase):
-    """Unit tests for testing save_to_file_csv method of Base class."""
-
-    # Add test cases for save_to_file_csv method here
-
-class TestBaseLoadFromFileCSV(unittest.TestCase):
-    """Unit tests for testing load_from_file_csv method of Base class."""
-
-    # Add test cases for load_from_file_csv method here
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

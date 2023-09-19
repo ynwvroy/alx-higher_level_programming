@@ -24,11 +24,6 @@ class Square(Rectangle):
         """
         super().__init__(size, size, x, y, id)
 
-    def __str__(self):
-        """Return a string representation of the Square."""
-        return "[Square] ({}) {}/{} - {}".format(
-            self.id, self.x, self.y, self.width)
-
     @property
     def size(self):
         """Getter for size attribute."""
@@ -40,23 +35,29 @@ class Square(Rectangle):
         self.width = value
         self.height = value
 
+    def __str__(self):
+        """Return a string representation of the Square."""
+        return (
+            f"[Square] ({self.id}) "
+            f"{self.x}/{self.y} - "
+            f"{self.width}"
+        )
+
     def update(self, *args, **kwargs):
-        """Update attribute of the square"""
+        """Assign arguments or keyword arguments to attributes."""
+        attr_names = ['id', 'size', 'x', 'y']
         if args:
-            attrs = ["id", "size", "x", "y"]
             for i, arg in enumerate(args):
-                setattr(self, attrs[i], arg)
+                setattr(self, attr_names[i], arg)
         else:
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
     def to_dictionary(self):
-        """Return the dictionary rep of a Square"""
-        square_dict = {
-            "id": self.id,
-            "size": self.width,
-            "x": self.x,
-            "y": self.y
+        """Return the dictionary representation of the square."""
+        return {
+            'id': self.id,
+            'size': self.width,
+            'x': self.x,
+            'y': self.y
         }
-
-        return square_dict
