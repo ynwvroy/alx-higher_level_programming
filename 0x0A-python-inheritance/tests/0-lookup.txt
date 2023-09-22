@@ -1,0 +1,23 @@
+# Use the lookup function
+>>> from my_module import lookup
+
+# Create a simple class for testing
+>>> class MyClass:
+...     def __init__(self):
+...         self.my_attribute = 42
+...     def my_method(self):
+...         pass
+
+# Test the lookup function with MyClass
+>>> result = lookup(MyClass)
+>>> 'my_attribute' in result
+True
+>>> 'my_method' in result
+True
+
+# Test the lookup function with a built-in type (int)
+>>> result = lookup(10)
+>>> 'bit_length' in result
+True
+>>> 'real' in result
+True

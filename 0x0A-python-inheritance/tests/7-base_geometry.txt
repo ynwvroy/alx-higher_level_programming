@@ -1,0 +1,76 @@
+# Import the BaseGeometry class from the module "7-base_geometry"
+>>> BaseGeometry = __import__('7-base_geometry').BaseGeometry
+>>> bg = BaseGeometry()
+
+# Test cases for integer_validator
+
+# Test correct input
+>>> bg.integer_validator("my_int", 12)
+
+# Test string value
+>>> bg.integer_validator("name", "John")
+Traceback (most recent call last):
+    ...
+TypeError: name must be an integer
+
+# Test with 0 value
+>>> bg.integer_validator("age", 0)
+Traceback (most recent call last):
+    ...
+ValueError: age must be greater than 0
+
+# Test with negative value
+>>> bg.integer_validator("distance", -4)
+Traceback (most recent call last):
+    ...
+ValueError: distance must be greater than 0
+
+# Test with None value
+>>> bg.integer_validator("distance", None)
+Traceback (most recent call last):
+    ...
+TypeError: distance must be an integer
+
+# Test with dictionary value
+>>> bg.integer_validator("distance", {1, 2})
+Traceback (most recent call last):
+    ...
+TypeError: distance must be an integer
+
+# Test with Boolean value
+>>> bg.integer_validator("distance", True)
+Traceback (most recent call last):
+    ...
+TypeError: distance must be an integer
+
+# Test with list value
+>>> bg.integer_validator("distance", [3])
+Traceback (most recent call last):
+    ...
+TypeError: distance must be an integer
+
+# Test with incomplete tuple value
+>>> bg.integer_validator("distance", (1,))
+Traceback (most recent call last):
+    ...
+TypeError: distance must be an integer
+
+# Test with only one argument
+>>> bg.integer_validator("age")
+Traceback (most recent call last):
+    ...
+TypeError: integer_validator() missing 1 required positional argument: 'value'
+
+# Test no arguments
+>>> bg.integer_validator()
+Traceback (most recent call last):
+    ...
+TypeError: integer_validator() missing 2 required positional arguments: 'name' and 'value'
+
+# Test cases for area method
+
+# Test area method without implementation
+>>> bg.area()
+Traceback (most recent call last):
+    ...
+Exception: area() is not implemented
