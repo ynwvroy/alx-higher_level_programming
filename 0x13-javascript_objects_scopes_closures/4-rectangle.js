@@ -15,8 +15,8 @@ class Rectangle {
       let myVar = '';
       let y = 0;
       while (y < this.width) {
-	myVar += 'X';
-	y++;
+        myVar += 'X';
+        y++;
       }
 
       console.log(myVar);

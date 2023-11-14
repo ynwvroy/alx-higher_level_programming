@@ -11,8 +11,8 @@ class Square extends PrevSquare {
       let myVar = '';
       let y = 0;
       while (y < this.width) {
-	myVar += myChar;
-	y++;
+        myVar += myChar;
+        y++;
       }
 
       console.log(myVar);
